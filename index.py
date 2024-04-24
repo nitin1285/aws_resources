@@ -117,6 +117,7 @@ def create_service():
                     'containerPort': 123
                 },
             ],
+"""          
 """            
             serviceRegistries=[
                 {
@@ -126,6 +127,7 @@ def create_service():
                     'containerPort': 123
                 },
             ],
+"""            
             desiredCount=1,
             clientToken='string',
             launchType='EC2'|'FARGATE'|'EXTERNAL',
