@@ -1,0 +1,71 @@
+import boto3
+import json
+
+
+def create_service():
+    
+    ecs = boto3.client('ecs', region_name='us-east-1')
+    try:
+        print("hello, starting the create service script")
+        
+        response = ecs.create_service(
+            cluster = 'devcluster',
+            serviceName = 'myservice',
+            taskDefinition = 'arn:aws:ecs:us-east-1:576203915925:task-definition/test12345:1',
+            loadBalancers=[
+                {
+#                    'targetGroupArn': 'arn:aws:elasticloadbalancing:us-east-1:576203915925:targetgroup/testtg/d8a845301000de47',
+                    'loadBalancerName': 'nitinloadballancer',
+                    'containerName': 'testcontainer12345',
+                    'containerPort': 80
+                },
+            ],
+            desiredCount=1,
+            clientToken='string',
+            launchType='FARGATE',
+
+            platformVersion='LATEST',
+#role is not required as task def is using the networkmode as awsvpc,
+#            role='string',
+            deploymentConfiguration={
+                'deploymentCircuitBreaker': {
+                    'enable': True,
+                    'rollback': True
+                },
+                'maximumPercent': 200,
+                'minimumHealthyPercent': 100,
+            },
+            networkConfiguration={
+                'awsvpcConfiguration': {
+                    'subnets': [
+                        'subnet-0cea3c092dad71971','subnet-0e55c9c29f678cbd5'
+                    ],
+                    'securityGroups': [
+                        'sg-07913c4c272323017',
+                    ],
+                    'assignPublicIp': 'DISABLED'
+                }
+            },
+            healthCheckGracePeriodSeconds=60,
+            schedulingStrategy='REPLICA',
+            deploymentController={
+                'type': 'ECS'
+            },
+            
+#            tags=[
+#                {
+#                    'key': 'string',
+#                    'value': 'string'
+#                },
+#            ],
+#            
+#            enableECSManagedTags=True|False,
+#            propagateTags='TASK_DEFINITION'|'SERVICE'|'NONE',
+#            enableExecuteCommand=True|False,
+            
+        )                
+    except Exception as e:
+        print(str(e))
+        return False
+    
+create_service()
